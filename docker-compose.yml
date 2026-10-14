@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16
+    environment: {POSTGRES_USER: fit, POSTGRES_PASSWORD: fit, POSTGRES_DB: fitmind}
+    volumes: [pgdata:/var/lib/postgresql/data]
+  web:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      DATABASE_URL: postgresql://fit:fit@db:5432/fitmind
+      SECRET_KEY: change-me
+    depends_on: [db]
+    restart: on-failure
+volumes:
+  pgdata: {}

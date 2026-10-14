@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FitMind – AI Personalized Fitness Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f7f3;--card:#fff;--ink:#12302b;--mut:#5b7a72;--ac:#1f9d6b;--ac2:#f2a93b;--bd:#d5e5dd;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1f1b;--card:#16302a;--ink:#e6f4ee;--mut:#9bbdb2;--bd:#25483f}}
+:root[data-theme="dark"]{--bg:#0e1f1b;--card:#16302a;--ink:#e6f4ee;--mut:#9bbdb2;--bd:#25483f}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Sora,system-ui,sans-serif;line-height:1.55;font-size:15px}
+body.senior{font-size:19px}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:30px;margin:8px 0 2px;font-weight:800;letter-spacing:-.5px}h2{font-size:19px;margin:0 0 10px}
+.sub{color:var(--mut);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:14px}
+nav{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px}
+nav button{flex:none;border:1px solid var(--bd);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:99px;font:inherit;cursor:pointer}
+nav button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input,select{width:100%;padding:11px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{background:var(--ac);color:#fff;border:0;padding:13px 18px;border-radius:12px;font:inherit;font-weight:600;cursor:pointer;width:100%;margin-top:14px}
+.btn.alt{background:var(--ac2);color:#2b1c00}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{background:var(--bg);border-radius:12px;padding:12px}.stat b{display:block;font-size:24px}.stat span{color:var(--mut);font-size:13px}
+.day{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)}.day:last-child{border:0}
+.day em{font-style:normal;font-weight:800;color:var(--ac);min-width:44px}
+.tag{display:inline-block;background:var(--ac2);color:#2b1c00;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:600;margin:2px 4px 2px 0}
+.note{border-left:4px solid var(--ac2);padding:8px 12px;background:var(--bg);border-radius:8px;margin:10px 0}
+.hide{display:none}.small{font-size:12px;color:var(--mut)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+svg{width:100%;height:auto}
+ol{padding-left:20px;margin:6px 0}canvas{display:block}
+body{background:radial-gradient(1100px 480px at 85% -10%,rgba(31,157,107,.28),transparent),var(--bg)}
+.wrap>.row:first-child{background:linear-gradient(135deg,#1f9d6b,#0f5f4a);color:#fff;padding:18px;border-radius:20px;margin-bottom:14px;box-shadow:0 10px 30px rgba(31,157,107,.3)}
+.wrap>.row:first-child .sub{color:#d8f5e8;margin:0}
+.card{box-shadow:0 4px 18px rgba(0,0,0,.07);transition:transform .2s}.card:hover{transform:translateY(-2px)}
+.stat b{background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.bar{height:10px;border-radius:9px;background:var(--bg);overflow:hidden;margin-bottom:6px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));animation:g 1s}
+@keyframes g{from{width:0}}
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.bg i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.45;animation:fl 14s ease-in-out infinite alternate}
+.bg i:nth-child(1){width:340px;height:340px;background:#1f9d6b;top:-80px;left:-60px}
+.bg i:nth-child(2){width:300px;height:300px;background:#f2a93b;bottom:-60px;right:-40px;animation-delay:-5s}
+.bg i:nth-child(3){width:240px;height:240px;background:#6a5acd;top:40%;left:55%;animation-delay:-9s;opacity:.28}
+@keyframes fl{to{transform:translate(60px,-50px) scale(1.25)}}
+@keyframes up{from{opacity:0;transform:translateY(22px)}}
+@keyframes slide{from{opacity:0;transform:translateX(28px)}}
+@keyframes flow{50%{background-position:100% 50%}}
+@keyframes pop{to{transform:scale(1.2) rotate(8deg)}}
+section:not(.hide){animation:slide .45s cubic-bezier(.2,.8,.2,1)}
+section .card{animation:up .6s both;background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(8px)}
+section .card:nth-child(2){animation-delay:.1s}section .card:nth-child(3){animation-delay:.2s}section .card:nth-child(4){animation-delay:.3s}
+.wrap>.row:first-child{background:linear-gradient(120deg,#1f9d6b,#0f5f4a,#2bb3c0,#1f9d6b);background-size:300% 300%;animation:flow 10s ease infinite}
+#auth{background:linear-gradient(135deg,#0f5f4a,#1f9d6b,#f2a93b,#2bb3c0)!important;background-size:300% 300%;animation:flow 12s ease infinite}
+#auth .card{animation:up .7s both}
+.hero{font-size:44px;text-align:center;animation:pop 1.2s infinite alternate}
+#splash{position:fixed;inset:0;z-index:20;background:linear-gradient(135deg,#0f5f4a,#1f9d6b);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
+#splash.gone{opacity:0;visibility:hidden}#splash .lg{font-size:70px;animation:pop 1s infinite alternate}#splash h1{margin:6px 0}
+.feat{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin-bottom:14px;padding-bottom:4px;scrollbar-width:none}
+.feat div{flex:0 0 68%;max-width:250px;scroll-snap-align:start;color:#fff;padding:16px;border-radius:18px;display:flex;flex-direction:column;gap:4px;animation:up .6s both;transition:transform .25s}
+.feat div:hover{transform:scale(1.04) rotate(-1deg)}.feat b{font-size:17px}.feat span{font-size:13px;opacity:.92}
+.btn{transition:transform .15s,box-shadow .2s}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(31,157,107,.35)}.btn:active{transform:scale(.97)}
+nav button{transition:all .2s}nav button:hover{transform:translateY(-2px)}nav button.on{box-shadow:0 6px 16px rgba(31,157,107,.4)}
+.day{transition:background .2s,padding .2s}.day:hover{background:var(--bg);padding-left:8px;border-radius:8px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}.pill{display:inline-block;padding:4px 14px;border-radius:99px;font-weight:800}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js"></script></head><body><div class="bg"><i></i><i></i><i></i></div><div id="splash"><div class="lg">💪</div><h1>FitMind</h1><p>AI Fitness Intelligence Platform</p></div><div id="auth" style="display:none;position:fixed;inset:0;z-index:9;background:var(--bg);align-items:center;justify-content:center;padding:16px"><div class="card" style="width:100%;max-width:380px"><div class="hero">🏃‍♂️🥗🧠</div><h1 style="text-align:center">FitMind</h1><p class="sub">Log in or create an account to save your data.</p><label>Name (for new account)</label><input id="an"><label>Email</label><input id="ae" type="email"><label>Password</label><input id="ap" type="password"><button class="btn" id="alogin">Log in</button><button class="btn alt" id="areg">Create account</button><p class="small" id="amsg"></p></div></div><div class="wrap">
+<div class="row"><div><h1>FitMind</h1><p class="sub">Your plan, built from your body data</p></div>
+<button class="btn alt" style="width:auto;margin:0" id="sbtn">Senior mode: off</button><button class="btn" style="width:auto;margin:0 0 0 6px" id="lo">Log out</button></div>
+<nav id="nav"></nav>
+<div class="feat"><div style="background:linear-gradient(135deg,#1f9d6b,#0f5f4a)"><b>🧠 AI Plans</b><span>Workouts and diets made for you</span></div><div style="background:linear-gradient(135deg,#f2a93b,#e5533d)"><b>🎥 Pose Coach</b><span>Live posture feedback</span></div><div style="background:linear-gradient(135deg,#6a5acd,#3b2f8f)"><b>🤖 Deep Learning</b><span>Neural networks in action</span></div><div style="background:linear-gradient(135deg,#2bb3c0,#1b6f8a)"><b>👴 Senior Care</b><span>Safe low-impact guidance</span></div></div>
+
+<section id="t-profile" class="card"><h2>Your profile</h2>
+<div class="g2"><div><label>Name</label><input id="name"></div><div><label>Age</label><input id="age" type="number" value="25"></div>
+<div><label>Gender</label><select id="gender"><option>Male</option><option>Female</option></select></div>
+<div><label>Diet</label><select id="diet"><option>Vegetarian</option><option>Non-vegetarian</option></select></div>
+<div><label>Height (cm)</label><input id="h" type="number" value="170"></div><div><label>Weight (kg)</label><input id="w" type="number" value="70"></div></div>
+<label>Activity level</label><select id="act"><option value="1.2">Low (desk job)</option><option value="1.375" selected>Light (1-3 days/week)</option><option value="1.55">Moderate (3-5 days/week)</option><option value="1.725">High (daily training)</option></select>
+<label>Health condition</label><select id="cond"><option>None</option><option>Knee / joint pain</option><option>Heart / blood pressure</option><option>Diabetes</option></select>
+<label>Goal</label><select id="goal"><option value="lose">Lose weight</option><option value="gain">Build muscle</option><option value="keep">Stay fit</option></select>
+<button class="btn" id="save">Generate my plan</button></section>
+
+<section id="t-plan" class="hide"></section>
+<section id="t-diet" class="hide"></section>
+<section id="t-pose" class="hide"></section>
+<section id="t-ai" class="hide"></section>
+<section id="t-prog" class="hide"></section>
+<p class="small">Educational project. Not medical advice; consult a doctor before starting any exercise plan.</p>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const tabs=[["profile","👤 Profile"],["plan","🏋️ Workout"],["diet","🥗 Diet"],["pose","🎥 Pose Coach"],["ai","🤖 AI Lab"],["prog","📈 Progress"]];
+let S={p:null,logs:[],senior:false};
+try{const x=localStorage.getItem("fitmind");if(x)S=JSON.parse(x)}catch(e){}
+const TOK=()=>localStorage.getItem("fm_token");
+const api=(u,m,b)=>fetch("/api/"+u,{method:m||"GET",headers:{"Content-Type":"application/json",...(TOK()?{Authorization:"Bearer "+TOK()}:{})},body:b?JSON.stringify(b):undefined}).then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.detail||"Request failed");return j});
+const store=()=>{try{localStorage.setItem("fitmind",JSON.stringify(S))}catch(e){}if(TOK())api("state","PUT",{p:S.p,logs:S.logs,senior:S.senior}).catch(()=>{})};
+
+/* ---- navigation ---- */
+$("nav").innerHTML=tabs.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join("");
+function show(t){tabs.forEach(x=>$("t-"+x[0]).classList.toggle("hide",x[0]!==t));
+ document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
+ if(t==="plan")renderPlan();if(t==="diet")renderDiet();if(t!=="pose")stopPose();if(t==="pose")renderPose();if(t==="ai")renderAI();if(t==="prog")renderProg()}
+$("nav").onclick=e=>{if(e.target.dataset.t){if(!S.p&&e.target.dataset.t!=="profile"){alert("Fill your profile first.");return}show(e.target.dataset.t)}};
+$("sbtn").onclick=()=>{S.senior=!S.senior;applySenior();store();if(S.p)show(document.querySelector("nav .on").dataset.t)};
+function applySenior(){document.body.classList.toggle("senior",S.senior);$("sbtn").textContent="Senior mode: "+(S.senior?"on":"off")}
+
+/* ---- Module 1: user onboarding ---- */
+$("save").onclick=()=>{
+ const p={name:$("name").value||"Friend",age:+$("age").value,g:$("gender").value,diet:$("diet").value,h:+$("h").value,w:+$("w").value,act:+$("act").value,cond:$("cond").value,goal:$("goal").value};
+ if(!p.age||!p.h||!p.w){alert("Please enter age, height and weight.");return}
+ S.p=p;if(!S.logs.length)S.logs.push({d:Date.now(),w:p.w});
+ if(p.age>=60)S.senior=true;applySenior();store();show("plan")};
+if(S.p){const p=S.p;$("name").value=p.name;$("age").value=p.age;$("gender").value=p.g;$("diet").value=p.diet;$("h").value=p.h;$("w").value=p.w;$("act").value=p.act;$("cond").value=p.cond;$("goal").value=p.goal}
+applySenior();
+
+/* ---- Module 2: AI engine (feature calc + prediction + adaptive rules) ---- */
+function metrics(){
+ const p=S.p,bmi=p.w/Math.pow(p.h/100,2);
+ const bmr=10*p.w+6.25*p.h-5*p.age+(p.g==="Male"?5:-161);   // Mifflin-St Jeor
+ const tdee=bmr*p.act;
+ const cat=bmi<18.5?"Underweight":bmi<25?"Healthy":bmi<30?"Overweight":"Obese";
+ let adj=p.goal==="lose"?-450:p.goal==="gain"?300:0;
+ const sl=slope();                                            // kg per week from logs
+ let fb="Log your weight a few times and the plan will adapt to your real progress.";
+ const cur=lastW();
+ if(sl!==null){
+  if(p.goal==="lose"){ if(sl>-0.1){adj-=120;fb="Weight isn't dropping. Calories lowered a little."} else if(sl<-1){adj+=150;fb="You're losing too fast. Calories raised to protect muscle."} else fb="Great pace. Plan unchanged."}
+  else if(p.goal==="gain"){ if(sl<0.1){adj+=150;fb="Weight isn't rising. Calories increased."} else if(sl>0.7){adj-=100;fb="Gaining fast. Calories trimmed to limit fat gain."} else fb="Great pace. Plan unchanged."}
+  else fb=Math.abs(sl)<0.3?"Weight is stable. Perfect for maintenance.":"Weight is drifting. Calories adjusted.";
+  if(p.goal==="keep"&&Math.abs(sl)>=0.3)adj+=sl>0?-150:150;
+ }
+ const kcal=Math.max(1200,Math.round(tdee+adj));
+ const prot=Math.round(cur*(p.goal==="keep"||S.senior?1.2:1.6));
+ const fat=Math.round(kcal*.25/9),carb=Math.round((kcal-prot*4-fat*9)/4);
+ return{bmi:bmi.toFixed(1),cat,bmr:Math.round(bmr),tdee:Math.round(tdee),kcal,prot,fat,carb,fb,sl}}
+const lastW=()=>S.logs.length?S.logs[S.logs.length-1].w:S.p.w;
+function slope(){ // simple linear regression: weight vs time
+ const L=S.logs;if(L.length<3)return null;
+ const t0=L[0].d,x=L.map(l=>(l.d-t0)/864e5),y=L.map(l=>l.w),n=L.length;
+ const mx=x.reduce((a,b)=>a+b)/n,my=y.reduce((a,b)=>a+b)/n;
+ let nu=0,de=0;for(let i=0;i<n;i++){nu+=(x[i]-mx)*(y[i]-my);de+=(x[i]-mx)**2}
+ return de?nu/de*7:null}
+
+/* ---- Module 3: workout plan (safe-exercise rules) ---- */
+const LOW=["Chair squats 2x10","Seated marching 3 min x3","Wall push-ups 2x10","Slow walk 20 min","Balance and stretching 15 min","Rest day","Gentle yoga 20 min"];
+const PLAN={lose:["Brisk walk or jog 30 min","Bodyweight circuit (squats, push-ups, lunges) 3 rounds","Cycling or skipping 20 min","Core: plank, crunches, leg raises","Cardio intervals 20 min","Long walk 45 min","Rest and stretch"],
+ gain:["Chest + triceps: push-ups, dips, presses","Back + biceps: rows, pull-ups, curls","Legs: squats, lunges, calf raises","Rest day","Shoulders + core: presses, planks","Full-body strength circuit","Rest and walk"],
+ keep:["Jog 25 min","Strength: full body 30 min","Yoga 30 min","Cycling or swimming 30 min","Strength: upper body","Sport or hike","Rest day"]};
+const DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+function renderPlan(){
+ const p=S.p,m=metrics(),low=S.senior||p.age>=60||p.cond!=="None"&&p.cond!=="Diabetes";
+ const list=low?LOW:PLAN[p.goal];
+ let notes=[];
+ if(low)notes.push("Low-impact plan chosen for your age or health condition. Move slowly and use a chair or wall for support.");
+ if(p.cond==="Heart / blood pressure")notes.push("Keep effort at 'can talk comfortably'. Get a doctor's approval first.");
+ if(p.cond==="Knee / joint pain")notes.push("No jumping or deep squats. Stop if you feel sharp pain.");
+ if(p.cond==="Diabetes")notes.push("Check sugar before and after exercise. Carry a quick snack.");
+ $("t-plan").innerHTML=`<div class="card"><h2>Hi ${p.name}, here's your week</h2>
+ <div class="stats"><div class="stat"><b>${m.bmi}</b><span>BMI (${m.cat})</span></div><div class="stat"><b>${m.kcal}</b><span>Daily calories</span></div></div></div>
+ <div class="card"><h2>7-day workout</h2>${list.map((x,i)=>`<div class="day"><em>${DAYS[i]}</em><span>${x}</span></div>`).join("")}${notes.map(n=>`<div class="note">${n}</div>`).join("")}
+ <div class="note">Open the Pose Coach tab for live form correction.</div></div>`}
+
+/* ---- Module 4: diet engine ---- */
+const MEALS={Vegetarian:[["Breakfast",.25,"Oats with banana and nuts, or veg poha with curd"],["Lunch",.35,"Roti or rice, dal, mixed veg, salad"],["Snack",.1,"Roasted chana, fruit, or buttermilk"],["Dinner",.3,"Paneer or tofu sabzi, 2 rotis, soup"]],
+"Non-vegetarian":[["Breakfast",.25,"Egg omelette, toast, fruit"],["Lunch",.35,"Rice or roti, grilled chicken or fish curry, salad"],["Snack",.1,"Boiled eggs, nuts, or fruit"],["Dinner",.3,"Chicken or egg curry, 2 rotis, vegetables"]]};
+function renderDiet(){
+ const p=S.p,m=metrics();
+ $("t-diet").innerHTML=`<div class="card"><h2>Daily targets</h2><div class="stats">
+ <div class="stat"><b>${m.kcal}</b><span>Calories</span></div><div class="stat"><b>${m.prot} g</b><span>Protein</span></div>
+ <div class="stat"><b>${m.carb} g</b><span>Carbs</span></div><div class="stat"><b>${m.fat} g</b><span>Fat</span></div></div>
+ <p class="small">Calories = BMR (${m.bmr}) x activity = ${m.tdee}, adjusted for your goal.</p></div>
+ <div class="card"><h2>Meal ideas</h2>${MEALS[p.diet].map(x=>`<div class="day"><em style="min-width:80px">${x[0]}</em><span>${x[2]}<br><span class="tag">${Math.round(m.kcal*x[1])} kcal</span></span></div>`).join("")}
+ ${p.cond==="Diabetes"?'<div class="note">Choose low-glycemic foods (oats, dal, millets). Avoid sugary drinks.</div>':""}
+ ${p.cond==="Heart / blood pressure"?'<div class="note">Keep salt low and avoid fried food.</div>':""}</div>`}
+
+/* ---- Module 5: progress + adaptive feedback ---- */
+function renderProg(){
+ const m=metrics(),L=S.logs;
+ $("t-prog").innerHTML=`<div class="card"><h2>Log today's weight</h2><div class="g2"><input id="lw" type="number" step="0.1" placeholder="kg"><button class="btn" style="margin:0" id="addw">Add entry</button></div></div>
+ <div class="card"><h2>Weight trend</h2>${chart(L)}<div class="note"><b>AI feedback:</b> ${m.fb}</div>
+ ${m.sl!==null?`<p class="small">Trend: ${m.sl.toFixed(2)} kg/week. In 4 weeks you may be around <b>${(lastW()+m.sl*4).toFixed(1)} kg</b> (linear regression).</p>`:""}
+ <button class="btn alt" id="demo">Load demo data</button></div>`;
+ dash();$("addw").onclick=()=>{const v=+$("lw").value;if(!v){alert("Enter your weight in kg.");return}S.logs.push({d:Date.now(),w:v});store();renderProg()};
+ $("demo").onclick=()=>{const b=S.p.w,d=S.p.goal==="gain"?.2:S.p.goal==="lose"?-.25:0;S.logs=[];for(let i=0;i<8;i++)S.logs.push({d:Date.now()-(7-i)*7*864e5,w:+(b+d*i+(Math.random()-.5)*.4).toFixed(1)});store();renderProg()}}
+function chart(L){
+ if(L.length<2)return'<p class="small">Add at least 2 entries to see your chart.</p>';
+ const ws=L.map(l=>l.w),mn=Math.min(...ws)-1,mx=Math.max(...ws)+1,W=320,H=150;
+ const pts=L.map((l,i)=>[20+i*(W-40)/(L.length-1),H-20-(l.w-mn)/(mx-mn)*(H-40)]);
+ return`<svg viewBox="0 0 ${W} ${H}"><polyline fill="none" stroke="var(--ac)" stroke-width="3" points="${pts.map(p=>p.join(",")).join(" ")}"/>${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="var(--ac2)"/>`).join("")}<text x="4" y="14" fill="var(--mut)" font-size="11">${mx.toFixed(0)} kg</text><text x="4" y="${H-4}" fill="var(--mut)" font-size="11">${mn.toFixed(0)} kg</text></svg>`}
+
+/* ===== Deep learning: neural network trained in the browser (TensorFlow.js) ===== */
+let DL=null,DLloss=[];
+const feat=p=>[p.age/80,p.h/200,p.w/120,(p.act-1.2)/.525,p.goal==="lose"?1:0,p.goal==="gain"?1:0,p.g==="Male"?1:0,p.cond==="None"?0:1];
+function spark(a){if(a.length<2)return"";const mx=Math.max(...a),W=320,H=110;return`<svg viewBox="0 0 ${W} ${H}"><polyline fill="none" stroke="var(--ac2)" stroke-width="3" points="${a.map((v,i)=>[i*W/(a.length-1),H-8-v/mx*(H-16)].join(",")).join(" ")}"/></svg>`}
+function renderAI(){
+ $("t-ai").innerHTML=`<div class="card"><h2>Deep learning engine</h2>
+ <p class="sub">A neural network (8 inputs, 16, 16, 2 outputs) learns to predict your daily calories and workout intensity from age, height, weight, activity, goal, gender and health condition.</p>
+ <button class="btn" id="trn">Train neural network</button>
+ <div class="small" id="aimsg" style="margin-top:8px">Not trained yet.</div><div id="aichart"></div><div id="airesult"></div>
+ <div class="note">Training data is synthetic (generated from nutrition formulas) for this demo. With a real dataset, the same code trains on real users.</div></div>`;
+ $("trn").onclick=trainDL;serverAI();insights();if(DL){$("aichart").innerHTML=spark(DLloss);showDL()}}
+async function trainDL(){
+ if(!window.tf){$("aimsg").textContent="TensorFlow.js did not load. Check your internet.";return}
+ $("trn").disabled=true;const X=[],Y=[],R=Math.random;
+ for(let i=0;i<800;i++){const p={age:18+R()*62,h:150+R()*40,w:45+R()*65,act:1.2+R()*.525,goal:["lose","gain","keep"][Math.floor(R()*3)],g:R()<.5?"Male":"Female",cond:R()<.3?"Heart":"None"};
+  const k=(10*p.w+6.25*p.h-5*p.age+(p.g==="Male"?5:-161))*p.act+(p.goal==="lose"?-450:p.goal==="gain"?300:0);
+  const it=Math.min(1,Math.max(.1,(p.act-1.2)*1.5+(p.goal==="lose"?.2:0)-(p.age>60?.3:0)-(p.cond!=="None"?.25:0)+.2));
+  X.push(feat(p));Y.push([k/3500,it])}
+ const m=tf.sequential();
+ m.add(tf.layers.dense({units:16,activation:"relu",inputShape:[8]}));m.add(tf.layers.dense({units:16,activation:"relu"}));m.add(tf.layers.dense({units:2}));
+ m.compile({optimizer:tf.train.adam(.01),loss:"meanSquaredError"});
+ DLloss=[];const xs=tf.tensor2d(X),ys=tf.tensor2d(Y);
+ await m.fit(xs,ys,{epochs:60,batchSize:32,callbacks:{onEpochEnd:async(e,l)=>{DLloss.push(l.loss);$("aichart").innerHTML=spark(DLloss);$("aimsg").textContent=`Training epoch ${e+1}/60, loss ${l.loss.toFixed(4)}`;await tf.nextFrame()}}});
+ DL=m;xs.dispose();ys.dispose();$("trn").disabled=false;showDL()}
+function showDL(){
+ const o=DL.predict(tf.tensor2d([feat(S.p)])).dataSync(),p=S.p,mt=metrics();
+ const base=Math.round(mt.tdee+(p.goal==="lose"?-450:p.goal==="gain"?300:0)),dl=Math.round(o[0]*3500),it=Math.min(1,Math.max(0,o[1]));
+ $("aimsg").textContent="Training complete. Predictions below.";
+ $("airesult").innerHTML=`<div class="stats" style="margin-top:10px"><div class="stat"><b>${dl}</b><span>Neural net calories</span></div><div class="stat"><b>${base}</b><span>Formula calories</span></div>
+ <div class="stat"><b>${Math.round(it*100)}%</b><span>Workout intensity (${it<.35?"light":it<.65?"moderate":"high"})</span></div><div class="stat"><b>${Math.abs(dl-base)}</b><span>Difference (kcal)</span></div></div>`}
+
+/* ===== Pose Coach: BlazePose (camera) + guided demo ===== */
+const EX={squat:{n:"Squat",lo:100,hi:160,st:["Feet shoulder-width apart","Push hips back, bend knees","Keep chest up, knees over toes","Stand up fully"]},
+ chair:{n:"Chair squat (senior-safe)",lo:125,hi:160,st:["Sit at the front of a sturdy chair","Lean forward slightly","Stand up slowly using your legs","Sit down slowly, count to 3"]},
+ arm:{n:"Arm raise",lo:40,hi:150,st:["Stand tall, arms by your sides","Raise both arms sideways slowly","Go to shoulder height or higher","Lower with control"]}};
+let ex="chair",mode="",reps=0,phase="up",good=0,tot=0,vid=null,poseM=null,lastSay="";
+const ang=(a,b,c)=>{let d=Math.abs((Math.atan2(c.y-b.y,c.x-b.x)-Math.atan2(a.y-b.y,a.x-b.x))*180/Math.PI);return d>180?360-d:d};
+function resetP(){reps=0;phase="up";good=tot=0}
+function renderPose(){
+ $("t-pose").innerHTML=`<div class="card"><h2>Pose Coach</h2><p class="sub">Step-by-step guidance with live posture feedback. Seniors get voice prompts.</p>
+ <label>Exercise</label><select id="exs">${Object.keys(EX).map(k=>`<option value="${k}"${k===ex?" selected":""}>${EX[k].n}</option>`).join("")}</select>
+ <div class="g2"><button class="btn" id="pd">Guide demo</button><button class="btn alt" id="pc">Start camera</button></div>
+ <canvas id="cv" width="320" height="320" style="width:100%;border-radius:12px;margin-top:12px;background:#0e1f1b"></canvas>
+ <div class="stats" style="margin-top:10px"><div class="stat"><b id="pang">-</b><span>Joint angle</span></div><div class="stat"><b id="prep">0</b><span>Reps</span></div></div>
+ <div class="note" id="pmsg">Pick Guide demo (animated figure) or Start camera (live BlazePose).</div><div class="small" id="pscore"></div>
+ <h2 style="margin-top:12px">Step by step</h2><ol id="pst"></ol></div>`;
+ const steps=()=>{$("pst").innerHTML=EX[ex].st.map(s=>`<li>${s}</li>`).join("")};steps();
+ $("exs").onchange=e=>{ex=e.target.value;resetP();steps()};
+ $("pd").onclick=()=>{stopPose();resetP();mode="demo";requestAnimationFrame(demoLoop)};
+ $("pc").onclick=startCam}
+function stopPose(){mode="";try{if(vid&&vid.srcObject)vid.srcObject.getTracks().forEach(t=>t.stop())}catch(e){}}
+async function startCam(){
+ stopPose();resetP();
+ try{if(!window.Pose)throw 0;
+  poseM=new Pose({locateFile:f=>"https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/"+f});
+  poseM.setOptions({modelComplexity:1,smoothLandmarks:true});
+  poseM.onResults(r=>{if(mode==="cam"&&r.poseLandmarks){drawFrame(r.image,r.poseLandmarks);process(r.poseLandmarks)}});
+  vid=document.createElement("video");vid.playsInline=true;
+  vid.srcObject=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}});await vid.play();
+  mode="cam";camLoop()}
+ catch(e){mode="";$("pmsg").textContent="Camera or BlazePose is blocked in this preview. Host the page (Netlify) and allow camera, or use Guide demo."}}
+async function camLoop(){if(mode!=="cam")return;await poseM.send({image:vid});requestAnimationFrame(camLoop)}
+function demoLoop(t){if(mode!=="demo")return;const lm=demoLM(t);drawFrame(null,lm);process(lm);requestAnimationFrame(demoLoop)}
+function demoLM(t){
+ const s=(Math.sin(t/900)+1)/2,lm=[],P=(i,x,y)=>lm[i]={x,y};
+ if(ex==="arm"){const a=(15+s*150)*Math.PI/180;P(23,.5,.62);P(11,.5,.3);P(25,.5,.8);P(27,.5,.95);P(13,.5+.2*Math.sin(a),.3+.2*Math.cos(a));P(15,.5+.4*Math.sin(a),.3+.4*Math.cos(a));return lm}
+ const th=175-s*(ex==="chair"?55:90),r=(180-th)*Math.PI/180,ph=r*.45,sg=.21;
+ const sd=[-Math.sin(ph),-Math.cos(ph)],td=[sd[0]*Math.cos(r)-sd[1]*Math.sin(r),sd[0]*Math.sin(r)+sd[1]*Math.cos(r)];
+ const A=[.6,.92],K=[A[0]+sd[0]*sg,A[1]+sd[1]*sg],H=[K[0]+td[0]*sg,K[1]+td[1]*sg],ln=Math.min(r*.5,.8),Sh=[H[0]-Math.sin(ln)*.26,H[1]-Math.cos(ln)*.26];
+ P(27,...A);P(25,...K);P(23,...H);P(11,...Sh);P(13,Sh[0]-.1,Sh[1]+.12);P(15,Sh[0]-.2,Sh[1]+.1);return lm}
+const CN=[[11,23],[23,25],[25,27],[11,13],[13,15]];
+function drawFrame(img,lm){
+ const x=$("cv").getContext("2d");x.clearRect(0,0,320,320);
+ if(img)x.drawImage(img,0,0,320,320);else{x.fillStyle="#0e1f1b";x.fillRect(0,0,320,320)}
+ x.lineWidth=5;x.lineCap="round";x.strokeStyle="#1f9d6b";
+ CN.forEach(([i,j])=>{x.beginPath();x.moveTo(lm[i].x*320,lm[i].y*320);x.lineTo(lm[j].x*320,lm[j].y*320);x.stroke()});
+ x.fillStyle="#f2a93b";[11,23,25,27,13,15].forEach(i=>{x.beginPath();x.arc(lm[i].x*320,lm[i].y*320,6,0,7);x.fill()})}
+function process(lm){
+ const e=EX[ex];let a,msg,ok=true;
+ if(ex==="arm"){a=ang(lm[13],lm[11],lm[23]);
+  if(a<e.lo)phase="up";if(a>e.hi&&phase==="up"){reps++;phase="done"}
+  msg=a<e.lo?"Raise your arms":a<110?"Keep lifting":a>170?"Too high, lower slightly":"Good height";ok=a<=170}
+ else{a=ang(lm[23],lm[25],lm[27]);
+  if(a<e.lo&&phase==="up")phase="down";if(a>e.hi&&phase==="down"){reps++;phase="up"}
+  msg=a>e.hi?"Standing tall. Next rep":a<65?"Too deep. Protect your knees":a<=e.lo?"Great depth":"Go a little lower";ok=a>=65}
+ tot++;if(ok)good++;
+ $("pang").textContent=Math.round(a)+"°";$("prep").textContent=reps;$("pmsg").textContent=msg;$("pscore").textContent="Form score: "+Math.round(good/tot*100)+"%";
+ if(S.senior&&msg!==lastSay){lastSay=msg;try{speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(msg))}catch(err){}}}
+
+if(!TOK())$("auth").style.display="flex";
+async function doAuth(k){try{const r=await api(k,"POST",{email:$("ae").value,password:$("ap").value,name:$("an").value});localStorage.setItem("fm_token",r.token);const st=await api("state");localStorage.setItem("fitmind",JSON.stringify({p:st.p,logs:st.logs||[],senior:!!st.senior}));location.reload()}catch(e){$("amsg").textContent=e.message}}
+$("alogin").onclick=()=>doAuth("login");$("areg").onclick=()=>doAuth("register");
+$("lo").onclick=()=>{localStorage.removeItem("fm_token");localStorage.removeItem("fitmind");location.reload()};
+async function serverAI(){
+ const c=document.createElement("div");c.className="card";c.innerHTML="<h2>Server AI (Python)</h2><p class='small'>Loading...</p>";$("t-ai").appendChild(c);
+ try{const r=await api("ai/recommend","POST",{p:S.p});
+  c.innerHTML=`<h2>Server AI (Python, scikit-learn)</h2><p class="sub">Pipeline: StandardScaler, then a neural network (32-16 hidden layers), served by the backend.</p><div class="stats"><div class="stat"><b>${r.kcal}</b><span>Predicted calories</span></div><div class="stat"><b>${Math.round(r.intensity*100)}%</b><span>Workout intensity</span></div><div class="stat"><b>${r.bmi}</b><span>BMI</span></div><div class="stat"><b>${r.tdee}</b><span>TDEE</span></div></div><h2 style="margin-top:12px">Preprocessing and feature extraction</h2>${r.features.map(f=>`<div class="row small"><span>${f.name}</span><span>${f.raw} to ${f.scaled}</span></div>`).join("")}`
+ }catch(e){c.innerHTML="<h2>Server AI</h2><p class='small'>Log in on the deployed server to use this.</p>"}}
+async function dash(){
+ const c=document.createElement("div");c.className="card";$("t-prog").appendChild(c);
+ try{const a=await api("analytics");c.innerHTML=`<h2>Analytics dashboard</h2><div class="stats"><div class="stat"><b>${a.current}</b><span>Current kg</span></div><div class="stat"><b>${a.change}</b><span>Change since start (kg)</span></div><div class="stat"><b>${a.weekly}</b><span>kg per week</span></div><div class="stat"><b>${a.entries}</b><span>Entries logged</span></div></div><div class="note">${a.status}</div><div>${a.entries>=1?'<span class="tag">First log</span>':""}${a.entries>=5?'<span class="tag">5 logs</span>':""}${a.entries>=10?'<span class="tag">10 logs</span>':""}${a.status.startsWith("On track")?'<span class="tag">On track</span>':""}</div>`}catch(e){c.remove()}}
+async function insights(){
+ const c=document.createElement("div");c.className="card";$("t-ai").appendChild(c);
+ try{const r=await api("ai/insights");const col=r.risk[0]==="L"?"#1f9d6b":r.risk[0]==="M"?"#f2a93b":"#e5533d";
+  c.innerHTML=`<h2>Explainable AI: health risk (Random Forest)</h2><span class="pill" style="background:${col};color:#fff">${r.risk}</span><p class="small">${Object.entries(r.probs).map(([k,v])=>k+" "+Math.round(v*100)+"%").join(", ")}</p><h2 style="margin-top:10px">Why? Top factors</h2>${r.importance.map(f=>`<div class="small">${f.name}</div><div class="bar"><i style="width:${Math.min(100,Math.round(f.value*220))}%"></i></div>`).join("")}<h2 style="margin-top:12px">Anomaly detection (Isolation Forest)</h2><p class="small">${r.anomalies.length?r.anomalies.map(a=>"Entry "+a.entry+": unusual change of "+a.change+" kg").join("<br>"):"No unusual weight changes found (needs 6+ entries)."}</p>`
+ }catch(e){c.remove()}}
+setTimeout(()=>$("splash").classList.add("gone"),1200);
+setInterval(()=>{const f=document.querySelector(".feat");if(!f)return;f.scrollLeft+f.clientWidth>=f.scrollWidth-4?f.scrollTo({left:0,behavior:"smooth"}):f.scrollBy({left:240,behavior:"smooth"})},3000);
+show("profile");
+</script></body></html>
